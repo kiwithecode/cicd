@@ -57,6 +57,19 @@ spec:
       script: |
         #!/bin/bash
         set -e
+
+        # Crear y activar un entorno virtual
+        python -m venv venv
+        source venv/bin/activate
+
+        # Actualizar pip y wheel
         python -m pip install --upgrade pip wheel
+
+        # Instalar dependencias desde requirements.txt
         pip install -r requirements.txt
+
+        # Ejecutar nosetests con los argumentos proporcionados
         nosetests $(params.args)
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
