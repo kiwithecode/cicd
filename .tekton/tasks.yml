@@ -45,6 +45,14 @@ spec:
       script: |
         #!/bin/bash
         set -e
+        echo "Contents of the working directory:"
+        ls -la
+        echo "Checking for requirements.txt:"
+        if [ -f requirements.txt ]; then
+          echo "requirements.txt found"
+        else
+          echo "requirements.txt not found"
+        fi
         python -m pip install --upgrade pip wheel
         pip install -r requirements.txt
         nosetests $(params.args)
