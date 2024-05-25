@@ -76,7 +76,7 @@ spec:
         if [ -f /workspace/source/requirements.txt ]; then
           echo "requirements.txt found, installing dependencies..."
           # Instalar dependencias desde requirements.txt
-          pip install -r /workspace/source/requirements.txt
+          pip install -r requirements.txt
         else
           echo "requirements.txt not found, exiting..."
           exit 1
