@@ -51,6 +51,15 @@ spec:
       type: string
       default: "-v"
   steps:
+    - name: list-files
+      image: python:3.9-slim
+      workingDir: $(workspaces.source.path)
+      script: |
+        #!/bin/bash
+        set -e
+        echo "Listing files in the workspace directory:"
+        ls -la
+
     - name: nosetests
       image: python:3.9-slim
       workingDir: $(workspaces.source.path)
@@ -65,8 +74,15 @@ spec:
         # Actualizar pip y wheel
         python -m pip install --upgrade pip wheel
 
-        # Instalar dependencias desde requirements.txt
-        pip install -r requirements.txt
+        # Verificar que el archivo requirements.txt exista
+        if [ -f requirements.txt ]; then
+          echo "requirements.txt found, installing dependencies..."
+          # Instalar dependencias desde requirements.txt
+          pip install -r requirements.txt
+        else
+          echo "requirements.txt not found, exiting..."
+          exit 1
+        fi
 
         # Instalar nose
         pip install nose
