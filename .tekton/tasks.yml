@@ -43,26 +43,22 @@ metadata:
   name: nose
 spec:
   description: A task to run Python nosetests
-  workspaces:
-    - name: source
   params:
-    - name: args
+    - default: "-v"
       description: Arguments to pass to nose
+      name: args
       type: string
-      default: "-v"
   steps:
-    - name: list-files
-      image: python:3.9-slim
-      workingDir: $(workspaces.source.path)
+    - image: "python:3.9-slim"
+      name: list-files
       script: |
         #!/bin/bash
         set -e
         echo "Listing files in the workspace directory:"
-        ls -la
-
-    - name: nosetests
-      image: python:3.9-slim
+        ls -la $(workspaces.source.path)
       workingDir: $(workspaces.source.path)
+    - image: "python:3.9-slim"
+      name: nosetests
       script: |
         #!/bin/bash
         set -e
@@ -75,10 +71,10 @@ spec:
         python -m pip install --upgrade pip wheel
 
         # Verificar que el archivo requirements.txt exista
-        if [ -f requirements.txt ]; then
+        if [ -f $(workspaces.source.path)/requirements.txt ]; then
           echo "requirements.txt found, installing dependencies..."
           # Instalar dependencias desde requirements.txt
-          pip install -r requirements.txt
+          pip install -r $(workspaces.source.path)/requirements.txt
         else
           echo "requirements.txt not found, exiting..."
           exit 1
@@ -92,3 +88,6 @@ spec:
       securityContext:
         runAsNonRoot: false
         runAsUser: 0
+      workingDir: $(workspaces.source.path)
+  workspaces:
+    - name: source
